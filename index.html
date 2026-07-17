@@ -3,36 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brian-Radio</title>
+    <title>Brain-Radio</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        header {
-            padding: 20px;
-            background-color: #333;
-            border-bottom: 3px solid #00aaff; /* Neue Farbe für Brain-Radio */
-        }
-        .content {
-            padding: 20px;
-            max-width: 800px;
-            margin: auto;
-        }
-        .radio-player {
-            background: #2a2a2a;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-        }
+        body { font-family: sans-serif; background-color: #1a1a1a; color: #ffffff; text-align: center; padding: 20px; }
+        .player-container { background: #2a2a2a; padding: 20px; border-radius: 10px; max-width: 400px; margin: auto; }
+        audio { width: 100%; margin-top: 15px; }
     </style>
 </head>
 <body>
+
+    <div class="player-container">
+        <h1>Brian-Radio</h1>
+        <p>Live Stream</p>
+        
+        <!-- HIER NUR DEINE STREAM-URL EINFÜGEN -->
+        <audio controls>
+            <source src="https://stream.laut.fm/bria-radio" type="audio/mpeg">
+            Dein Browser unterstützt diesen Player nicht.
+        </audio>
+    </div>
+
+</body>
+</html>
 
     <header>
         <h1>Brian-Radio</h1>
