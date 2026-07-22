@@ -16,16 +16,49 @@
             background: #2a2a2a; 
             padding: 40px; 
             border-radius: 15px; 
-            max-width: 500px; 
+            max-width: 400px; 
             margin: auto; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
         h1 { margin-bottom: 20px; color: #00aaff; }
         
+        /* Design für das Album-Cover */
+        #album-cover {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: none; /* Wird erst angezeigt, wenn ein Cover da ist */
+        }
+
+        /* Song-Informationen */
+        #song-info { 
+            margin-top: 20px; 
+            font-size: 16px; 
+            color: #dddddd;
+            min-height: 50px;
+        }
+
+        #current-artist {
+            font-weight: bold;
+            color: #00aaff;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        #current-title {
+            color: #ffffff;
+            font-size: 16px;
+            display: block;
+        }
+        
         /* Design für den Abspielen-Knopf */
         #playButton { 
-            padding: 15px 40px; 
-            font-size: 20px; 
+            padding: 12px 30px; 
+            font-size: 18px; 
             background-color: #00aaff; 
             border: none; 
             color: white; 
@@ -33,10 +66,9 @@
             cursor: pointer; 
             font-weight: bold;
             transition: background 0.3s;
+            margin-top: 15px;
         }
         #playButton:hover { background-color: #0088cc; }
-        
-        #song-info { margin-top: 30px; color: #cccccc; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -44,22 +76,31 @@
     <div class="container">
         <h1>Brian-Radio</h1>
         
+        <!-- Album Cover Bild -->
+        <img id="album-cover" src="" alt="Album Cover">
+
+        <!-- Song-Anzeige -->
+        <div id="song-info">
+            <span id="current-artist">Lade Sender...</span>
+            <span id="current-title">Bitte warten</span>
+        </div>
+
         <!-- Der unsichtbare Player -->
         <audio id="radioPlayer">
             <source src="https://stream.laut.fm/brian-radio" type="audio/mpeg">
         </audio>
 
         <!-- Der schicke Button -->
-        <button id="playButton">▶ Abspielen</button>
-
-        <!-- Hier werden später die Infos geladen -->
-        <div id="song-info">Warte auf Verbindung zum Stream...</div>
+        <div>
+            <button id="playButton">▶ Abspielen</button>
+        </div>
     </div>
 
     <script>
         const player = document.getElementById('radioPlayer');
         const button = document.getElementById('playButton');
 
+        // Play/Pause Logik
         button.addEventListener('click', function() {
             if (player.paused) {
                 player.play();
@@ -69,6 +110,40 @@
                 button.textContent = '▶ Abspielen';
             }
         });
+
+        // Funktion, um die Song-Daten von laut.fm abzurufen
+        function updateSongInfo() {
+            fetch('https://api.laut.fm/station/brian-radio/current_song')
+                .then(response => response.json())
+                .then(data => {
+                    const artistSpan = document.getElementById('current-artist');
+                    const titleSpan = document.getElementById('current-title');
+                    const coverImg = document.getElementById('album-cover');
+
+                    if (data && data.artist && data.title) {
+                        artistSpan.textContent = data.artist.name;
+                        titleSpan.textContent = data.title;
+
+                        // Prüfen ob ein Album-Cover vorhanden ist
+                        if (data.image && data.image !== "") {
+                            coverImg.src = data.image;
+                            coverImg.style.display = "inline-block";
+                        } else if (data.album && data.album.cover && data.album.cover !== "") {
+                            coverImg.src = data.album.cover;
+                            coverImg.style.display = "inline-block";
+                        } else {
+                            coverImg.style.display = "none";
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.log('Fehler beim Laden der Song-Daten:', error);
+                });
+        }
+
+        // Sofort beim Laden ausführen und danach alle 10 Sekunden aktualisieren
+        updateSongInfo();
+        setInterval(updateSongInfo, 10000);
     </script>
 
 </body>
